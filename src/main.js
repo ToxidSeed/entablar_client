@@ -12,7 +12,8 @@ import 'quasar-extras/ionicons'
 import 'quasar-extras/mdi'
 import Quasar from 'quasar'
 
-import WinLogin from './components/WinLogin.vue'
+//import WinLogin from './components/WinLogin.vue'
+//import WinMain from './components/WinMain.vue'
 import WinRegistrarse from './components/WinRegistrarse.vue'
 import WinCampo from './components/WinCampo.vue'
 import WinTabla from './components/WinTabla.vue'
@@ -21,7 +22,7 @@ import TipoDatoLista from './components/TipoDatoLista.vue'
 import CampoLista from './components/CampoLista.vue'
 import WinTipoDato from './components/WinTipoDato.vue'
 import ProveedorBDLista from './components/ProveedorBDLista.vue'
-//import WinIntro from './components/WinIntro.vue'
+import WinIntro from './components/WinIntro.vue'
 import WinProyecto from './components/WinProyecto.vue'
 import WinUsuario from './components/WinUsuario.vue'
 import WinPerfil from './components/WinPerfil.vue'
@@ -29,11 +30,8 @@ import WinPerfil from './components/WinPerfil.vue'
 
 
 const routes = [
-  /*{
-      path:'/', component:WinIntro, props:true
-  },*/
   {
-    path:'/', component:WinLogin, props:true
+    path:'', component:WinIntro
   },
   {
     path:'/registrarse', component:WinRegistrarse, props:true

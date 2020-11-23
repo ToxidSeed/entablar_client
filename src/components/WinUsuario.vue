@@ -55,7 +55,7 @@
     </div>    
 </template>
 <script>
-import axios from 'axios'
+//import axios from 'axios'
 
 export default {
   name: 'WinUsuario',  
@@ -71,6 +71,8 @@ export default {
   methods: {
     doSomething(event, id, label){
       console.log('doSomething')
+      console.log(id)
+      console.log(label)
     },
     get_dbms_list(){
       console.log('doSomething')
