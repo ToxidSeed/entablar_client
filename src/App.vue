@@ -70,7 +70,7 @@
 <script>
 import axios from 'axios'
 
-//import { openURL } from 'quasar'
+//import { openURL } from 'quasarx'
 import TablaLista from './components/TablaLista.vue'
 //import WinMain from './components/WinMain.vue'
 
