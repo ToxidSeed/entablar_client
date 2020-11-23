@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
+import GAuth from 'vue-google-oauth2'
 
 import './styles/quasar.styl'
 import 'quasar-framework/dist/quasar.ie.polyfills'
@@ -12,8 +13,9 @@ import 'quasar-extras/ionicons'
 import 'quasar-extras/mdi'
 import Quasar from 'quasar'
 
-//import WinLogin from './components/WinLogin.vue'
+import WinLogin from './components/WinLogin.vue'
 //import WinMain from './components/WinMain.vue'
+import WinInicio from './components/WinInicio.vue'
 import WinRegistrarse from './components/WinRegistrarse.vue'
 import WinCampo from './components/WinCampo.vue'
 import WinTabla from './components/WinTabla.vue'
@@ -31,7 +33,15 @@ import WinPerfil from './components/WinPerfil.vue'
 
 const routes = [
   {
-    path:'', component:WinIntro
+    path:'', component:WinInicio,
+    children: [
+      {        
+        path: '',component: WinIntro
+      }
+    ]
+  },
+  {
+    path:'/login', component:WinLogin, props:true
   },
   {
     path:'/registrarse', component:WinRegistrarse, props:true
@@ -129,12 +139,15 @@ const router = new VueRouter({
   routes
 })
 
+const gauthOption = {
+  clientId: '435471540706-icu11lq037akvpb6p2eep3s49f6v5icc.apps.googleusercontent.com',
+  scope: 'profile email',
+  prompt: 'select_account'
+}
+
 Vue.use(VueRouter)
-
-Vue.use(
-  Quasar
- )
-
+Vue.use(GAuth, gauthOption)
+Vue.use(Quasar)
 
 Vue.config.productionTip = false
 
