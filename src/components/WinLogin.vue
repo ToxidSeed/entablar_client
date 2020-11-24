@@ -11,7 +11,7 @@
                 </q-card-main>
                 
                 <q-card-actions >
-                    <q-btn label="continuar" no-caps class="full-width" color="blue"/>                                                        
+                    <q-btn label="continuar"  no-caps class="full-width" color="blue"/>
                 </q-card-actions>                    
                 <q-card-main align="center">
                     <div>- o -</div>

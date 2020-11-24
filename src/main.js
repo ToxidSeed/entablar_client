@@ -140,7 +140,7 @@ const router = new VueRouter({
 })
 
 const gauthOption = {
-  clientId: '435471540706-icu11lq037akvpb6p2eep3s49f6v5icc.apps.googleusercontent.com',
+  clientId: 'XXXXXXXXXXXXXX.apps.googleusercontent.com',
   scope: 'profile email',
   prompt: 'select_account'
 }
