@@ -50,6 +50,7 @@
               </q-item>          
             </q-list>
           </q-btn-dropdown>
+          <q-btn @click="sign_out" label="Sign Out" flat no-caps icon="fas fa-sign-out-alt"/>
       </q-toolbar>
     </q-layout-header>
 
@@ -91,10 +92,6 @@ export default {
     }
   },
   mounted:function(){
-    this.isSignIn = this.$gAuth.isAuthorized
-    if(!this.isSignIn){
-      this.$router.push('/login')
-    }
   },
   methods: {
     doSomething: function(event, id, label){
@@ -121,8 +118,15 @@ export default {
                 console.log('get_dbms_list')         
             })
     },
-    test(){
-      console.log('olak ase')
+    sign_out:async function(){
+      const success_logout = await this.$gAuth.signOut()      
+      console.log(success_logout)
+      if(success_logout == true){        
+        console.log(success_logout)
+        localStorage.isAuthorized = false
+        localStorage.authCode = ''
+        this.$router.push('/login')
+      }
     }
   }
 }

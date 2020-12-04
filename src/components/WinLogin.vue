@@ -11,13 +11,13 @@
                 </q-card-main>
                 
                 <q-card-actions >
-                    <q-btn label="continuar"  no-caps class="full-width" color="blue"/>
+                    <q-btn label="continuar" @click="sign_in" no-caps class="full-width" color="blue"/>
                 </q-card-actions>                    
                 <q-card-main align="center">
                     <div>- o -</div>
                 </q-card-main>
                 <q-card-actions >
-                    <q-btn flat no-caps class="full-width">
+                    <q-btn flat @click="sign_in_with_google" no-caps class="full-width">
                         <img src="../assets/google-icon.png" width="32px" height="32px"><div>&nbsp;&nbsp;Continuar con google</div>
                     </q-btn>
                 </q-card-actions>
@@ -27,11 +27,21 @@
 </template>
 <script>
 export default {
-    name: 'WinLogin',  
+    name: 'WinLogin',          
   data () {
     return {
           
     }
+  },
+  methods:{
+      sign_in_with_google:async function(){
+          const authCode = await this.$gAuth.getAuthCode()          
+          localStorage.authCode = authCode
+          if(authCode  != ''){
+              localStorage.isAuthorized = true
+          }
+          this.$router.push('/')
+      }
   }
 }
 </script>
