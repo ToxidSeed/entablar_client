@@ -35,7 +35,9 @@ export default {
   },
   methods:{
       sign_in_with_google:async function(){
-          const authCode = await this.$gAuth.getAuthCode()          
+          const authCode = await this.$gAuth.getAuthCode()    
+          const response = await this.$http.post('http://127.0.0.1:5000/entablar/SessionManager/SessionManager/login', { code: authCode, redirect_uri: 'postmessage' , provider:"google"})      
+          console.log(response)
           localStorage.authCode = authCode
           if(authCode  != ''){
               localStorage.isAuthorized = true

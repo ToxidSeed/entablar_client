@@ -57,12 +57,17 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
 
 export default {
     name:'CampoLista',
     props:{
         tabla_id:{
+            default:''
+        },
+        tabla_name:{
+            default:''
+        },
+        tabla_fullname:{
             default:''
         },
         dmbs_id:{
@@ -118,25 +123,13 @@ export default {
     }),
     methods:{
         request(tabla_id){
-            //console.log(this.tabla_id)
-            axios
-            .post('http://127.0.0.1:5000/entablar/Campo/Campo/get_campos_por_tabla',{              
+            //console.log(this.tabla_id)            
+            this.$http
+            .post(this.$backend_url+'Campo/Campo/get_campos_por_tabla',{ 
                 tabla_id:tabla_id
-            })
-            .then(({ data }) => {
-               this.serverData = data.rows
-               /* // updating pagination to reflect in the UI
-                this.serverPagination = pagination
-
-                // we also set (or update) rowsNumber
-                this.serverPagination.rowsNumber = data.rowsNumber
-
-                // then we update the rows with the fetched ones
-                this.serverData = data.rows
-
-                // finally we tell QTable to exit the "loading" state
-                this.loading = false*/                
-            })
+            }).then(function(response){                   
+                console.log(response)
+            });
         }
     },
     mounted:function() {                 

@@ -7,31 +7,42 @@
                 </q-toolbar-title>            
                 <q-btn flat round dense icon="close" to="/tabla" />
             </q-toolbar>-->
-            <q-card-title>
-                <span class="text-indigo">Campo</span>                
-                <span slot="subtitle">
-                    Tabla: 
+            <q-card-title>  
+                <span class="text-indigo">Nuevo Campo</span>
+                <!--<span slot="subtitle">
+                    <div>
+                    Tabla:
                     <span class="text-indigo">
                         {{additional_data.nombre_tabla}}
-                    </span>
-                    DBMS:
-                    <span class="text-indigo">
-                        {{additional_data.dbms_nombre}}
-                    </span>                        
-                </span>
+                         TB_MAMBA_NEGRA
+                    </span>                    
+                    </div>      
+                    <q-chip color="primary">
+                      No dbms selected
+                    </q-chip>              
+                </span>                -->
             </q-card-title>
             
-            <q-card-main>
-                <div class="row q-ma-auto">
+            <q-card-main>                
+                <div class="row q-ma-auto">                    
                     <q-input type="text" class="col-3" 
                             stack-label="ID" 
                             ref="ID"
                             v-model="form_data.campo_id"  
+                            readonly
                             color="indigo"/>
                     <q-input type="text" class="col-8 offset-xs-1"
                     v-model="form_data.nombre"
                     stack-label="Nombre de Campo" 
                     color="indigo" />                 
+                </div>
+                <div class="q-mt-sm">
+                    <span>Tabla:</span> {{additional_data.tabla_fullname}}
+                </div>
+                <div>
+                    <q-chip color="green">
+                        {{form_data.dbms_nombre}}
+                    </q-chip>
                 </div>
                 <q-input
                     v-model="form_data.descripcion"
@@ -130,7 +141,8 @@ export default {
                 flg_pk:false
             },            
             additional_data:{
-                nombre_tabla:"",
+                tabla_nombre:"",
+                tabla_fullname:"",
                 dbms_nombre:"",
                 dbms_id:""
             },
@@ -158,32 +170,7 @@ export default {
             this.crear_campo_nuevo()
         });
 
-        this.$on('tabla_loaded',function(params){  
-            this.get_tipos_dato({
-                dbms_id:params.dbms_id,
-                tipo_dato_nombre:""
-            })
-        })    
-        //console.log('mounted')
-        //this.get_campo(this.campo_id)
-        this.$on('campo_loaded',function(params){
-            //Cargar campo
-            //this.get_tabla(params.tabla_id)    
-            //Cargar tipos de dato
-            console.log(params)
-            this.get_tipo_dato({
-                tipo_dato_id:this.form_data.tipo_dato_id
-            })  
-        })
-        //La tabla tiene el dbms por eso recien cuando se carga la tabla se ejecuta 
-        //la llamada a los tipos de dato
-        /*this.$on('tabla_loaded',function(params){
-            this.get_tipos_dato({
-                dbms_id:params.dbms_id,
-                tipo_dato_nombre:""
-            })
-                      
-        })*/
+        
         //Cuando el tipo de dato esta cargado, se realiza la llamada
         this.$on('tipo_dato_loaded',function(){
             if (this.campo_id != ""){
@@ -195,6 +182,36 @@ export default {
         })
     },
     methods:{       
+        new(tabla_id){                                    
+            this.$http
+            .post(this.$backend_url+'Campo/Campo/new',{ 
+                tabla_id:tabla_id
+            }).then(response => {   
+                var result = response.data   
+                this.additional_data.tabla_nombre = result.data.tabla_nombre
+                this.additional_data.tabla_fullname = result.data.tabla_fullname
+                this.form_data.dbms_id = result.data.dbms_id
+                this.form_data.dbms_nombre = result.data.dbms_nombre
+                console.log(result)
+
+                this.get_tipos_dato({
+                    dbms_id:this.form_data.dbms_id,
+                    tipo_dato_nombre:""
+                });
+            });
+
+            //set initial data
+            this.form_data.campo_id = ""
+            this.form_data.nombre=""
+            this.form_data.descripcion=""
+            this.form_data.tipo_dato_nombre=""
+            this.form_data.tipo_dato_id=""
+            this.form_data.tipo_dato_data=""
+            this.form_data.flg_obligatorio={value:"0", disabled:false}
+            this.form_data.flg_pk="0"             
+            this.tipo_dato_config_input = []
+            this.tipo_dato_config_input_model={}            
+        },
         guardar(){               
              axios({ 
                 method: "post", 
@@ -232,21 +249,19 @@ export default {
              });
         },
         get_tabla(param){
-            axios({
-                method:"post",
-                url:"http://127.0.0.1:5000/entablar/Tabla/Tabla/get_object",
-                data:{
-                    tabla_id:param.tabla_id,
-                    dbms:''
-                }
-            }).then(result =>{                
+            console.log(param)            
+            this.$http
+            .post(this.$backend_url+'Tabla/Tabla/get',{ 
+                tabla_id:param.tabla_id
+            }).then(function(response){      
+                var result = response.data
                 this.additional_data.nombre_tabla = result.data.nombre                
                 this.additional_data.dbms_nombre  = result.data.dbms_nombre
                 this.additional_data.dbms_id      = result.data.dbms_id
                 this.$emit('tabla_loaded',{
                     "dbms_id":result.data.dbms_id
                 });
-            })
+            });
         },
         get_campo(campo_id){
             axios({
@@ -271,24 +286,22 @@ export default {
                 });
             });
         },
-        get_tipos_dato(params){            
-            axios({
-                method:"post",
-                url:"http://127.0.0.1:5000/entablar/TipoDato/TipoDato/get_list",
-                data:{
-                    dbms_id:params.dbms_id,
-                    tipo_dato_nombre:params.tipo_dato_nombre
-                }
-            }).then(result =>{                                
-                //this.tipos_dato_list = result.data.rows                      
+        get_tipos_dato(params){   
+            this.$http
+            .post(this.$backend_url+'TipoDatoManager/Select/search',{
+                dbms_id:params.dbms_id,
+                tipo_dato_nombre:params.tipo_dato_nombre
+            }).then(response =>{
+                var result = response.data                
                 this.tipos_dato_list = []
-                for (var index in result.data.rows){                    
+                for (var index in result.data){                    
                     this.tipos_dato_list.push({
-                        'label':result.data.rows[index]['nombre'],
-                        'value':result.data.rows[index]['tipo_dato_id']
-                    });
+                        'label':result.data[index]['label'],
+                        'value':result.data[index]['value'],
+                        'config':result.data[index]['config']
+                    });                    
                 }
-            })
+            })                        
         },
         get_tipo_dato(param){            
             axios({
@@ -309,27 +322,21 @@ export default {
             })
         },
         crear_campo_nuevo(){
-            this.form_data.campo_id = ""
-            this.form_data.nombre=""
-            this.form_data.descripcion=""
-            this.form_data.tipo_dato_nombre=""
-            this.form_data.tipo_dato_id=""
-            this.form_data.tipo_dato_data=""
-            this.form_data.flg_obligatorio={value:"0", disabled:false}
-            this.form_data.flg_pk="0"             
-            this.tipo_dato_config_input = []
-            this.tipo_dato_config_input_model={}            
+            console.log(this.form_data.tabla_id)
+                        
         }
     },
     beforeRouteEnter(to, from, next){
          next(vm => {
              console.log(vm);
-            /*vm.get_campo(vm.campo_id)*/            
-            vm.get_tabla({tabla_id:vm.tabla_id})
+             console.log(vm.tabla_id);
+             console.log(vm.campo_id);
+            //vm.get_campo(vm.campo_id)         
+            //vm.get_tabla({tabla_id:vm.tabla_id})
             if (vm.campo_id != ""){
                 vm.get_campo(vm.campo_id);
             }else{
-                vm.crear_campo_nuevo()
+                vm.new(vm.tabla_id);
             }
         })
     },

@@ -10,26 +10,32 @@
           aria-label="Menu"
           icon="menu"
         />        
-
-        <q-toolbar-title>
-          <q-btn icon="home" label="Entablar" flat to="/"></q-btn>              
-          <!--<div slot="subtitle">Running on Quasar v{{ $q.version }}</div>-->
+        <q-btn icon="home" label="Entablar" flat to="/"></q-btn>
+        <q-toolbar-title class="row">
+            <div class="col-3"></div>
+            <div class="col">              
+              <q-input color="indigo" float-label="Buscar objetos de base de datos" v-model="search_text"/>              
+            </div>
+            <q-btn icon="fas fa-search" flat @click="buscar()">                              
+            </q-btn>
+            
+            <div class="col-3"></div>            
         </q-toolbar-title>  
 
-          <q-btn-dropdown flat 
-              icon="fas fa-database" 
-              :label="dbms.name" 
-              no-caps
-              @click="get_dbms_list"              
-              >
-            <q-list link>
-              <q-item v-for="item in dbms_list" :key="item.proveedor_bd_id" v-close-overlay @click.native="doSomething($event, item.proveedor_bd_id, item.nombre)">                
-                <q-item-main>
-                  <q-item-tile label >{{item.nombre}}</q-item-tile>                  
-                </q-item-main>                              
-              </q-item>               
-            </q-list>  
-          </q-btn-dropdown> 
+        <q-btn-dropdown flat 
+            icon="fas fa-database" 
+            :label="dbms.name" 
+            no-caps
+            @click="get_dbms_list"              
+            >
+          <q-list link>
+            <q-item v-for="item in dbms_list" :key="item.proveedor_bd_id" v-close-overlay @click.native="set_dbms($event, item.proveedor_bd_id, item.nombre)">                
+              <q-item-main>
+                <q-item-tile label >{{item.nombre}}</q-item-tile>                  
+              </q-item-main>                              
+            </q-item>               
+          </q-list>  
+        </q-btn-dropdown> 
 
           <q-btn-dropdown flat icon="settings" label="Config" no-caps >            
             <q-list link>
@@ -40,30 +46,38 @@
               </q-item>          
               <q-item to="/proyecto/">
                 <q-item-main>
-                  <q-item-tile label >proyectos</q-item-tile>                
+                  <q-item-tile label >Proyectos</q-item-tile>                
                 </q-item-main>              
               </q-item>          
               <q-item to="/perfil/">
                 <q-item-main>
-                  <q-item-tile label>perfil</q-item-tile>                
+                  <q-item-tile label>Perfil</q-item-tile>                
                 </q-item-main>              
               </q-item>          
             </q-list>
           </q-btn-dropdown>
-          <q-btn @click="sign_out" label="Sign Out" flat no-caps icon="fas fa-sign-out-alt"/>
+          <q-btn-dropdown label="M" color="indigo" split>            
+            <q-list link>
+              <q-item>
+                <q-item-main>
+                  <q-item-tile label @click="sign_out" >Sign out</q-item-tile>                
+                </q-item-main>              
+              </q-item>                        
+            </q-list>
+          </q-btn-dropdown>          
+          <!--<q-btn @click="sign_out" label="Sign Out" flat no-caps icon="fas fa-sign-out-alt"/>-->          
       </q-toolbar>
     </q-layout-header>
 
     <q-layout-drawer              
       v-model="leftDrawerOpen"      
     >
-      <TablaLista></TablaLista>      
+      <PanelOpciones/>
     </q-layout-drawer>
 
     <q-page-container>
       <router-view :dbms_id="dbms.id" :dbms_name="dbms.name">
-      </router-view>
-      <!--<WinMain />-->
+      </router-view>      
     </q-page-container>
   </q-layout>
 </template>
@@ -72,17 +86,23 @@
 import axios from 'axios'
 
 //import { openURL } from 'quasarx'
-import TablaLista from './TablaLista.vue'
+//import TablaLista from './TablaLista.vue'
+import PanelOpciones from './PanelOpciones.vue'
+//import ResultadosBusqueda from './ResultadosBusqueda.vue'
 //import WinMain from './components/WinMain.vue'
 
 export default {
   name: 'WinInicio',
   components: {
-    TablaLista/*,
+    PanelOpciones
+    //,ResultadosBusqueda
+    /*TablaLista,
     WinMain    */
   },
   data () {
     return {
+          search_text:"",
+          showing:false,
           dbms:{
             name:"DBMS",
             id:""
@@ -94,16 +114,20 @@ export default {
   mounted:function(){
   },
   methods: {
-    doSomething: function(event, id, label){
+    set_dbms: function(event, id, label){
       this.dbms.name = label    
       this.dbms.id =   id
     },
+    buscar:function(){
+      this.$router.push('/ResultadosBusqueda/'+this.search_text)
+    },
     get_dbms_list: function(){
             axios
-            .post('http://127.0.0.1:5000/entablar/ProveedorBD/ProveedorBD/get_list',{              
+            .post(this.$backend_url+'ProveedorBDController/ProveedorBDController/get_list',{              
                 nombre:""         
             }).then(({ data }) => {
-               this.dbms_list = data.rows
+              //console.log(data)
+               this.dbms_list = data
                /* // updating pagination to reflect in the UI
                 this.serverPagination = pagination
 

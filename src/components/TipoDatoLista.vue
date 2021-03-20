@@ -22,8 +22,7 @@
     </q-toolbar>  
     <q-table class="no-shadow"
         :data="serverData"
-        :columns="columns"
-        selection="multiple"
+        :columns="columns"        
         row-key="tipo_dato_id" 
         @request="request"
         :pagination.sync="pagination"
@@ -54,7 +53,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
 
 export default {
     name:"TipoDatoLista",
@@ -87,12 +85,13 @@ export default {
     },
     methods:{        
         request(){            
-            axios
-            .post('http://127.0.0.1:5000/entablar/TipoDato/TipoDato/get_list',{                              
+            this.$http
+            .post(this.$backend_url+'TipoDatoManager/TipoDatoManager/get_list',{                              
                 tipo_dato_nombre: this.search_text,
                 dbms_id:this.proveedor_bd_id
-            }).then(({ data }) => {
-               this.serverData = data.rows
+            }).then( response => {
+                var result = response.data
+                this.serverData = result.data
                /* // updating pagination to reflect in the UI
                 this.serverPagination = pagination
 

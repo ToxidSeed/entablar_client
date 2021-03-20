@@ -12,11 +12,11 @@ import 'quasar-extras/ionicons'
 import 'quasar-extras/mdi'
 import Quasar from 'quasar'
 import router from '@/routes.js';
-
-
+import axios from 'axios'
+import app_config from '@/config.js'
 
 const gauthOption = {
-  clientId: '435471540706-icu11lq037akvpb6p2eep3s49f6v5icc.apps.googleusercontent.com',
+  clientId: app_config.gauth_client_id,
   scope: 'profile email',
   prompt: 'select_account'
 }
@@ -25,6 +25,8 @@ Vue.use(GAuth, gauthOption)
 Vue.use(Quasar)
 
 Vue.config.productionTip = false
+Vue.prototype.$http = axios
+Vue.prototype.$backend_url = "http://127.0.0.1:5000/entablar/"
 
 new Vue({
   router,

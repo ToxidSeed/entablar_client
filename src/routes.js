@@ -15,6 +15,11 @@ import WinProyecto from './components/WinProyecto.vue'
 import WinUsuario from './components/WinUsuario.vue'
 import WinPerfil from './components/WinPerfil.vue'
 import VueRouter from 'vue-router'
+import ResultadosBusqueda from './components/ResultadosBusqueda.vue';
+import PanelDatabase from './components/PanelDatabase.vue'
+import PanelEsquema from './components/PanelEsquema.vue'
+import PanelTablaList from './components/PanelTablaList.vue'
+
 
 Vue.use(VueRouter);
 
@@ -24,6 +29,80 @@ const routes =  [
       children: [
         {        
           path: '',component: WinIntro
+        },
+        {
+          path:'/resultadosbusqueda/:search_text', 
+          name:'resultadosbusqueda', 
+          component:ResultadosBusqueda,
+          props:true
+        },
+        { 
+          path: '/tabla/:tabla_id', component: WinTabla, props:true,
+          children:[
+          {
+            path:'',
+            component:CampoLista,
+            props:true
+          }
+          ]
+        },
+        {
+          path: 'database/:database_id', component: PanelDatabase, props:true
+        },
+        {
+          path: 'esquema/:esquema_id', component: PanelEsquema, props:true
+        },{
+          path: 'tlist', component:PanelTablaList, props:true
+        },
+        { 
+          path: '/campo/:tabla_id', component: WinCampo, props:true,
+          children:[
+            {
+              path:'',
+              component:CampoLista,
+              props:true
+            }
+          ] 
+        },{ 
+          path: '/proveedorbd/',component: WinProveedor, props:true,
+          children:[
+            {
+              path:'',
+              component: ProveedorBDLista
+            }
+          ]
+        },
+        { 
+          path: '/proveedorbd/:proveedor_bd_id',component: WinProveedor, props:true,
+          children:[
+            {
+              path:'',
+              component:TipoDatoLista,
+              props:true
+            }
+          ]
+        },
+        {
+          path:'/tipodato/:dbms_id', component:WinTipoDato, props:true,    
+          name:'x',    
+          children:[
+            {
+              path:'',
+              component:TipoDatoLista,
+              props:true
+            }
+          ]
+        },
+        {
+          path:'/tipodato/:dbms_id/:tipo_dato_id', component:WinTipoDato, props:true,        
+          name:'y',    
+          children:[
+            {
+              path:'',
+              component:TipoDatoLista,
+              props:true
+            }
+          ]
         }
       ]
     },
@@ -32,16 +111,6 @@ const routes =  [
     },
     {
       path:'/registrarse', component:WinRegistrarse, props:true
-    },
-    { 
-      path: '/campo/:tabla_id', component: WinCampo, props:true,
-      children:[
-        {
-          path:'',
-          component:CampoLista,
-          props:true
-        }
-      ] 
     },{ 
       path: '/campo/:tabla_id/:campo_id', component: WinCampo, props:true,
       children:[
@@ -52,15 +121,7 @@ const routes =  [
         }
       ] 
     },
-    { path: '/tabla/:tabla_id', component: WinTabla, props:true,
-      children:[
-        {
-          path:'',
-          component:CampoLista,
-          props:true
-        }
-      ]
-     },
+    
     { path: '/tabla/', component: WinTabla, props:true,
       children:[
         {
@@ -70,15 +131,7 @@ const routes =  [
         }
       ]
     },
-    { 
-      path: '/proveedorbd/',component: WinProveedor, props:true,
-      children:[
-        {
-          path:'',
-          component: ProveedorBDLista
-        }
-      ]
-    },
+    
     {
       path:'/proyecto/',component:WinProyecto, props:true    
     },
@@ -86,38 +139,6 @@ const routes =  [
       path:'/usuario/',component:WinUsuario, props:true    
     },{
       path:'/perfil/',component:WinPerfil, props:true    
-    },
-    { 
-      path: '/proveedorbd/:proveedor_bd_id',component: WinProveedor, props:true,
-      children:[
-        {
-          path:'',
-          component:TipoDatoLista,
-          props:true
-        }
-      ]
-    },
-    {
-      path:'/tipodato/:proveedor_bd_id', component:WinTipoDato, props:true,    
-      name:'x',    
-      children:[
-        {
-          path:'',
-          component:TipoDatoLista,
-          props:true
-        }
-      ]
-    },
-    {
-      path:'/tipodato/:proveedor_bd_id/:tipo_dato_id', component:WinTipoDato, props:true,        
-      name:'y',    
-      children:[
-        {
-          path:'',
-          component:TipoDatoLista,
-          props:true
-        }
-      ]
     }
 ]
 
