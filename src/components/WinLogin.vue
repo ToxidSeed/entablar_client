@@ -1,7 +1,7 @@
 <template>
     <div class="row justify-center items-center window-height">
         <div>
-            <q-card style="width: 400px">
+            <q-card style="width: 350px">
                 <q-card-title class="text-center">
                     Inicio de Sesion
                 </q-card-title>
@@ -9,11 +9,17 @@
                     <q-input  stack-label="Usuario o Email"  color="indigo"/>
                     <q-input  stack-label="Password"  color="indigo" />                    
                 </q-card-main>
-                <q-card-separator />
-                <q-card-actions align="end">
-                    <q-btn label="Iniciar Sesion" no-caps color="indigo" class="full-width"/>                                         
-                    <q-btn label="Registrarse" flat no-caps color="indigo" class="full-width" to="/registrarse"/>
-                    <q-btn label="He olvidado mi contraseña" flat no-caps color="indigo" class="full-width"/>
+                
+                <q-card-actions >
+                    <q-btn label="continuar" @click="sign_in" no-caps class="full-width" color="blue"/>
+                </q-card-actions>                    
+                <q-card-main align="center">
+                    <div>- o -</div>
+                </q-card-main>
+                <q-card-actions >
+                    <q-btn flat @click="sign_in_with_google" no-caps class="full-width">
+                        <img src="../assets/google-icon.png" width="32px" height="32px"><div>&nbsp;&nbsp;Continuar con google</div>
+                    </q-btn>
                 </q-card-actions>
             </q-card>          
         </div>
@@ -21,6 +27,23 @@
 </template>
 <script>
 export default {
-    
+    name: 'WinLogin',          
+  data () {
+    return {
+          
+    }
+  },
+  methods:{
+      sign_in_with_google:async function(){
+          const authCode = await this.$gAuth.getAuthCode()    
+          const response = await this.$http.post('http://127.0.0.1:5000/entablar/SessionManager/SessionManager/login', { code: authCode, redirect_uri: 'postmessage' , provider:"google"})      
+          console.log(response)
+          localStorage.authCode = authCode
+          if(authCode  != ''){
+              localStorage.isAuthorized = true
+          }
+          this.$router.push('/')
+      }
+  }
 }
 </script>

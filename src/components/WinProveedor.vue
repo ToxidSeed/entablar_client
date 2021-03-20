@@ -43,7 +43,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
+
 
 export default {
     name: 'WinProveedor',
@@ -77,25 +77,15 @@ export default {
             console.log(xhr)
         },
         get_object(proveedor_bd_id){
-            axios({ 
-                method: "post", 
-                url: "http://127.0.0.1:5000/entablar/ProveedorBD/ProveedorBD/get_object" ,
-                data:{
-                    proveedor_bd_id:proveedor_bd_id
-                },
-                //headers: {'Content-Type': 'text/plain' }
-                }).then(result => {                    
-                    this.form_data.proveedor_bd_id = result.data.proveedor_bd_id;                                    
-                    this.form_data.nombre    = result.data.nombre;
-                    this.form_data.icono     = result.data.proveedor_bd_id+"_"+result.data.icono;
-                    /*this.$emit("signal",{
-                        "event":"tabla_loaded",
-                        "tabla_id":this.form_data.tabla_id
-                    })*/
-                }, error => {
-                    console.error(error);
-                    
-            });
+            this.$http
+            .post(this.$backend_url+'ProveedorBDController/ProveedorBDController/get',{ 
+                proveedor_bd_id:proveedor_bd_id
+            }).then(response => {
+                var result = response.data
+                this.form_data.proveedor_bd_id = result.data.proveedor_bd_id;                                    
+                this.form_data.nombre    = result.data.nombre;
+                this.form_data.icono     = result.data.proveedor_bd_id+"_"+result.data.icono;
+            });   
         },
         nuevo(){
             this.form_data.proveedor_bd_id = ''

@@ -51,7 +51,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
 
 export default {
     name:"ProveedorBDLista",
@@ -89,25 +88,15 @@ export default {
         }
     },
     methods:{
-        request(){
-            axios
-            .post('http://127.0.0.1:5000/entablar/ProveedorBD/ProveedorBD/get_list',{              
-                nombre:this.search_text          
-            }).then(({ data }) => {
-               this.serverData = data.rows
-               /* // updating pagination to reflect in the UI
-                this.serverPagination = pagination
-
-                // we also set (or update) rowsNumber
-                this.serverPagination.rowsNumber = data.rowsNumber
-
-                // then we update the rows with the fetched ones
-                this.serverData = data.rows
-
-                // finally we tell QTable to exit the "loading" state
-                this.loading = false*/
-                console.log(this.serverData )
-            })
+        request(){            
+            this.$http
+            .post(this.$backend_url+'ProveedorBDController/ProveedorBDController/get_list',{ 
+                nombre:this.search_text
+            }).then(response => {   
+                var result = response.data
+                this.serverData = result.data
+                console.log(this.serverData)
+            });
         },
         open(){
             console.log(this.proveedor_bd_id)
