@@ -6,8 +6,8 @@
                     Inicio de Sesion
                 </q-card-title>
                 <q-card-main>
-                    <q-input  stack-label="Usuario o Email"  color="indigo"/>
-                    <q-input  stack-label="Password"  color="indigo" />                    
+                    <q-input  stack-label="Usuario o Email"  color="indigo" v-model="usuario"/>
+                    <q-input  stack-label="Password"  color="indigo" v-model="password"/>                    
                 </q-card-main>
                 
                 <q-card-actions >
@@ -28,22 +28,35 @@
 <script>
 export default {
     name: 'WinLogin',          
-  data () {
-    return {
-          
+    data () {
+        return {
+            usuario:"",
+            password:""        
+        }
+    },
+    methods:{
+        sign_in_with_google:async function(){        
+            const authCode = await this.$gAuth.getAuthCode()    
+            const httpresp = await this.$http.post('/auth/AuthManager/login', { code: authCode, redirect_uri: 'postmessage' , provider:"google"})      
+
+            let appresp = httpresp.data
+
+            if (appresp.success == true){                
+                let data = appresp.data
+                localStorage.authCode = authCode
+                localStorage.access_token = data.access_token
+                localStorage.email = data.email
+                localStorage.name = data.name
+            }
+            
+            if(authCode  != ''){
+                localStorage.isAuthorized = true
+            }
+            this.$router.push('/')
+        },
+        sign_in:function(){
+            console.log('fix')
+        }
     }
-  },
-  methods:{
-      sign_in_with_google:async function(){
-          const authCode = await this.$gAuth.getAuthCode()    
-          const response = await this.$http.post('http://127.0.0.1:5000/entablar/SessionManager/SessionManager/login', { code: authCode, redirect_uri: 'postmessage' , provider:"google"})      
-          console.log(response)
-          localStorage.authCode = authCode
-          if(authCode  != ''){
-              localStorage.isAuthorized = true
-          }
-          this.$router.push('/')
-      }
-  }
 }
 </script>

@@ -60,7 +60,7 @@
             <q-list link>
               <q-item>
                 <q-item-main>
-                  <q-item-tile label @click="sign_out" >Sign out</q-item-tile>                
+                  <q-item-tile label @click.native="sign_out" >Sign out</q-item-tile>                
                 </q-item-main>              
               </q-item>                        
             </q-list>
@@ -143,6 +143,7 @@ export default {
             })
     },
     sign_out:async function(){
+      console.log('oxxx')
       const success_logout = await this.$gAuth.signOut()      
       console.log(success_logout)
       if(success_logout == true){        

@@ -15,18 +15,24 @@ import router from '@/routes.js';
 import axios from 'axios'
 import app_config from '@/config.js'
 
+console.log(app_config)
+console.log(app_config.gauth_client_id)
+
 const gauthOption = {
   clientId: app_config.gauth_client_id,
   scope: 'profile email',
   prompt: 'select_account'
 }
 
+console.log(gauthOption)
+
 Vue.use(GAuth, gauthOption)
 Vue.use(Quasar)
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-Vue.prototype.$backend_url = "http://127.0.0.1:5000/entablar/"
+Vue.prototype.$http.defaults.baseURL  = "http://127.0.0.1:5000/entablar/"
+
 
 new Vue({
   router,

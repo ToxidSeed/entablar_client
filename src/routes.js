@@ -160,6 +160,7 @@ router.beforeEach((to, from, next) => {
   /**Si no está logeado, te debe llevar a la ventana de login
    */
 
+  //localStorage.isAuthorized = false
   let isAuthorized = localStorage.getItem('isAuthorized')  
   let authCode = localStorage.getItem('authCode');
   
