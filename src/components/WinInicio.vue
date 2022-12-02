@@ -1,85 +1,19 @@
 <template>
-  <q-layout id="q-app" view="hHh Lpr lFf">
-    <q-layout-header>
-      <q-toolbar color="indigo" inverted>
-        <q-btn
-          flat
-          dense          
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-          icon="menu"
-        />        
-        <q-btn icon="home" label="Entablar" flat to="/"></q-btn>
-        <q-toolbar-title class="row">
-            <div class="col-3"></div>
-            <div class="col">              
-              <q-input color="indigo" float-label="Buscar objetos de base de datos" v-model="search_text"/>              
-            </div>
-            <q-btn icon="fas fa-search" flat @click="buscar()">                              
-            </q-btn>
-            
-            <div class="col-3"></div>            
-        </q-toolbar-title>  
-
-        <q-btn-dropdown flat 
-            icon="fas fa-database" 
-            :label="dbms.name" 
-            no-caps
-            @click="get_dbms_list"              
-            >
-          <q-list link>
-            <q-item v-for="item in dbms_list" :key="item.proveedor_bd_id" v-close-overlay @click.native="set_dbms($event, item.proveedor_bd_id, item.nombre)">                
-              <q-item-main>
-                <q-item-tile label >{{item.nombre}}</q-item-tile>                  
-              </q-item-main>                              
-            </q-item>               
-          </q-list>  
-        </q-btn-dropdown> 
-
-          <q-btn-dropdown flat icon="settings" label="Config" no-caps >            
-            <q-list link>
-              <q-item to="/proveedorbd/">
-                <q-item-main>
-                  <q-item-tile label >DBMS</q-item-tile>                
-                </q-item-main>              
-              </q-item>          
-              <q-item to="/proyecto/">
-                <q-item-main>
-                  <q-item-tile label >Proyectos</q-item-tile>                
-                </q-item-main>              
-              </q-item>          
-              <q-item to="/perfil/">
-                <q-item-main>
-                  <q-item-tile label>Perfil</q-item-tile>                
-                </q-item-main>              
-              </q-item>          
-            </q-list>
-          </q-btn-dropdown>
-          <q-btn-dropdown label="M" color="indigo" split>            
-            <q-list link>
-              <q-item>
-                <q-item-main>
-                  <q-item-tile label @click.native="sign_out" >Sign out</q-item-tile>                
-                </q-item-main>              
-              </q-item>                        
-            </q-list>
-          </q-btn-dropdown>          
-          <!--<q-btn @click="sign_out" label="Sign Out" flat no-caps icon="fas fa-sign-out-alt"/>-->          
-      </q-toolbar>
-    </q-layout-header>
-
-    <q-layout-drawer              
-      v-model="leftDrawerOpen"      
+  <v-app>
+    <v-app-bar app
     >
-      <PanelOpciones/>
-    </q-layout-drawer>
-
-    <q-page-container>
-      <router-view :dbms_id="dbms.id" :dbms_name="dbms.name">
-      </router-view>      
-    </q-page-container>
-  </q-layout>
+      <v-app-bar-nav-icon @click="(drawer=!drawer)"></v-app-bar-nav-icon>    
+    </v-app-bar>
+    <v-navigation-drawer app v-model="drawer">
+      
+    </v-navigation-drawer >  
+    <v-main class="pa-0">      
+      <!-- If using vue-router -->      
+      <v-container class="pa-0">
+        <router-view></router-view>            
+      </v-container>        
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -87,27 +21,30 @@ import axios from 'axios'
 
 //import { openURL } from 'quasarx'
 //import TablaLista from './TablaLista.vue'
-import PanelOpciones from './PanelOpciones.vue'
+//import PanelOpciones from './PanelOpciones.vue'
 //import ResultadosBusqueda from './ResultadosBusqueda.vue'
 //import WinMain from './components/WinMain.vue'
+//import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'WinInicio',
   components: {
-    PanelOpciones
+    //HelloWorld
+    //PanelOpciones
     //,ResultadosBusqueda
     /*TablaLista,
     WinMain    */
   },
   data () {
     return {
+          drawer:false,
           search_text:"",
           showing:false,
           dbms:{
             name:"DBMS",
             id:""
           },        
-          leftDrawerOpen: this.$q.platform.is.desktop,
+          //leftDrawerOpen: this.$q.platform.is.desktop,
           dbms_list:[]
     }
   },
@@ -126,7 +63,7 @@ export default {
             .post(this.$backend_url+'ProveedorBDController/ProveedorBDController/get_list',{              
                 nombre:""         
             }).then(({ data }) => {
-              //console.log(data)
+              console.log(data)
                this.dbms_list = data
                /* // updating pagination to reflect in the UI
                 this.serverPagination = pagination

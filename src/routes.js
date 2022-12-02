@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import WinLogin from './components/WinLogin.vue'
 //import WinMain from './components/WinMain.vue'
+//import HelloWorld from '@/components/HelloWorld.vue'
 import WinInicio from './components/WinInicio.vue'
 import WinRegistrarse from './components/WinRegistrarse.vue'
 import WinCampo from './components/WinCampo.vue'
@@ -25,7 +26,7 @@ Vue.use(VueRouter);
 
 const routes =  [
     {
-      path:'', component:WinInicio,
+      path:'/', component:WinInicio,
       children: [
         {        
           path: '',component: WinIntro
@@ -165,17 +166,17 @@ router.beforeEach((to, from, next) => {
   let authCode = localStorage.getItem('authCode');
   
   console.log(authCode)
-  console.log(isAuthorized)
+  //console.log(isAuthorized)
 
   if(isAuthorized == "true"){
-    console.log(isAuthorized)
+    //console.log(isAuthorized)
     if(to.path == '/login'){
       router.push('/')
     }else{
       next()
     }
   }else{
-    console.log(to)
+    //console.log(to)
     if(to.path == '/login'){
       next()
     }else{      

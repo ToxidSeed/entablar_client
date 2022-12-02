@@ -5,7 +5,7 @@
           <q-item-main label="Bases de datos" sublabel="Learn more about it" />          
         </q-item>
         <q-item to="/esquema/0">
-          <q-item-side icon="fas fa-database" />
+          <q-item-side icon="fas fa-box" />
           <q-item-main label="Esquemas" sublabel="Learn more about it" />          
         </q-item>
         <q-item to="/tlist">
