@@ -1,16 +1,13 @@
 <template>
-  <WinInicio/>
+  <router-view></router-view>
 </template>
 
 <script>
-import WinInicio from '@/components/WinInicio.vue'
-
 export default {
   name: 'App',
 
-  components: {
-    WinInicio
-  },
+  components: {    
+},
   data: () => ({
     
   }),

@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import {BASE_PATH} from '@/js/constants.js'
+import axios from 'axios'
 import WinLogin from './components/WinLogin.vue'
 //import WinMain from './components/WinMain.vue'
 //import HelloWorld from '@/components/HelloWorld.vue'
@@ -150,39 +152,49 @@ const router = new VueRouter({
 /**
  * Deberia entrar al Login si es que 
 */
-router.beforeEach((to, from, next) => {
-  /*if(to.name == 'callback') { // check if "to"-route is "callback" and allow access
-    next()
-  } else if (router.app.$auth.isAuthenticated()) { // if authenticated allow access
-    next()
-  } else { // trigger auth0 login
-    router.app.$auth.login()
-  }*/
-  /**Si no está logeado, te debe llevar a la ventana de login
-   */
-
-  //localStorage.isAuthorized = false
-  let isAuthorized = localStorage.getItem('isAuthorized')  
-  let authCode = localStorage.getItem('authCode');
+router.beforeEach(async(to, from, next) => {
+  let token = localStorage.getItem('token')
+  let token_valido = await validar_token(token)  
   
-  console.log(authCode)
-  //console.log(isAuthorized)
-
-  if(isAuthorized == "true"){
-    //console.log(isAuthorized)
-    if(to.path == '/login'){
-      router.push('/')
-    }else{
-      next()
-    }
-  }else{
-    //console.log(to)
-    if(to.path == '/login'){
-      next()
-    }else{      
-      router.push('/login')
+  if (token_valido != true){      
+    if (to.name != 'login'){
+      next({ name: 'login' })      
     }    
-  }  
+    next()        
+  }
+  
+  if (to.name == 'login'){    
+    next({name:'main'})      
+  }
+  next()  
 })
+
+async function validar_token(token){
+  if (token == null || token == undefined){
+    return false
+  }
+
+  const http = axios.create({
+    baseUrl: BASE_PATH
+  })
+
+  const response = await http.post('/auth/LocalLoginController/validar_token',{
+    token:token
+  })
+
+  let data = response.data 
+  
+  if (data.success == false){
+    localStorage.removeItem('token')
+    return false;
+  }
+
+  if (data.expired == true){    
+    localStorage.removeItem('token')
+    return false;
+  }
+
+  return true
+}
 
 export default router;

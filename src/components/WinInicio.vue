@@ -3,6 +3,14 @@
     <v-app-bar app
     >
       <v-app-bar-nav-icon @click="(drawer=!drawer)"></v-app-bar-nav-icon>    
+      <v-spacer></v-spacer>
+      <v-btn plain>
+        <v-icon
+          color="red darken-4"
+        >
+          mdi-power-plug-off
+        </v-icon>
+      </v-btn>
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer">
       
