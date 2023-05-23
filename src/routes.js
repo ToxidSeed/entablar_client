@@ -8,11 +8,13 @@ import WinInicio from './components/WinInicio.vue'
 import WinRegistrarse from './components/WinRegistrarse.vue'
 import WinCampo from './components/WinCampo.vue'
 import WinTabla from './components/WinTabla.vue'
-import WinProveedor from './components/WinProveedor.vue'
+//import WinProveedor from './components/WinProveedor.vue'
+import WinDatastorageSystem from '@/components/WinDatastorageSystem.vue';
 import TipoDatoLista from './components/TipoDatoLista.vue'
 import CampoLista from './components/CampoLista.vue'
 import WinTipoDato from './components/WinTipoDato.vue'
-import ProveedorBDLista from './components/ProveedorBDLista.vue'
+
+//import TableDatastorageSystem from './components/TableDatastorageSystem.vue'
 import WinIntro from './components/WinIntro.vue'
 import WinProyecto from './components/WinProyecto.vue'
 import WinUsuario from './components/WinUsuario.vue'
@@ -22,6 +24,7 @@ import ResultadosBusqueda from './components/ResultadosBusqueda.vue';
 import PanelDatabase from './components/PanelDatabase.vue'
 import PanelEsquema from './components/PanelEsquema.vue'
 import PanelTablaList from './components/PanelTablaList.vue'
+import PanelDatastorageSystem from '@/components/PanelDatastorageSystem.vue'
 
 
 Vue.use(VueRouter);
@@ -67,14 +70,17 @@ const routes =  [
             }
           ] 
         },{ 
-          path: '/proveedorbd/',component: WinProveedor, props:true,
+          path: '/datastoragesystem/',component: WinDatastorageSystem, props:true,
+          name:"datastoragesystem",
           children:[
             {
-              path:'',
-              component: ProveedorBDLista
+              path:'nuevo',
+              name:'datastoragesystem-nuevo',
+              component: PanelDatastorageSystem
             }
           ]
-        },
+        }
+          /*,
         { 
           path: '/proveedorbd/:proveedor_bd_id',component: WinProveedor, props:true,
           children:[
@@ -84,7 +90,7 @@ const routes =  [
               props:true
             }
           ]
-        },
+        }*/,
         {
           path:'/tipodato/:dbms_id', component:WinTipoDato, props:true,    
           name:'x',    
@@ -153,27 +159,49 @@ const router = new VueRouter({
  * Deberia entrar al Login si es que 
 */
 router.beforeEach(async(to, from, next) => {
-  let token = localStorage.getItem('token')
-  let token_valido = await validar_token(token)  
-  
-  if (token_valido != true){      
+  let success = validar_acceso()
+  //console.log(success)
+  if (!success){
     if (to.name != 'login'){
       next({ name: 'login' })      
     }    
     next()        
   }
-  
+
   if (to.name == 'login'){    
-    next({name:'main'})      
+    next({name:'/'})      
   }
-  next()  
+  next()
 })
 
-async function validar_token(token){
+function validar_acceso(){    
+  let auth = localStorage.getItem('auth')
+  if(auth == '' || auth == undefined){
+    return false
+  }
+
+  let token = localStorage.getItem('token')
   if (token == null || token == undefined){
     return false
   }
 
+  switch (auth){
+    case 'local':
+      return validar_local_token(token)
+    case 'google':
+      return validar_google_token(token)
+    default:
+      return false
+  }
+}
+
+async function validar_google_token(token){
+  console.log(token)
+  return false
+}
+
+async function validar_local_token(token){  
+  
   const http = axios.create({
     baseUrl: BASE_PATH
   })
@@ -185,12 +213,12 @@ async function validar_token(token){
   let data = response.data 
   
   if (data.success == false){
-    localStorage.removeItem('token')
+    localStorage.clear()
     return false;
   }
 
   if (data.expired == true){    
-    localStorage.removeItem('token')
+    localStorage.clear()
     return false;
   }
 

@@ -1,56 +1,11 @@
 <template>
-    <q-dialog v-model="opened">        
-        <div slot="body">
-        <q-field
-            icon="account_circle"
-            helper="We need your name so we can send you to the movies."
-            label="Your name"
-            :label-width="3"
-        >
-            <q-input v-model="message" />
-        </q-field>
-        </div>        
-      <!--<q-card> 
-            <q-card-section class="q-pt-xs q-pb-xs" >
-                <q-icon :name="msgdata.icon" size="md" :color="msgdata.color" text-color="white" /> {{title}}            
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="q-pt-md q-pb-xs">
-            <div>ola k ase</div>
-            </q-card-section>            
-            <q-card-section class="q-pt-none q-mt-none" >
-                <div>
-                    <ul class="q-mt-none">
-                        <li v-for="item in errors" v-bind:key="item">
-                            {{item}}
-                        </li>
-                    </ul>
-                </div>
-            </q-card-section>            
-            <q-card-section class="q-pt-none q-mt-none" v-if="mostrar_info_error">
-                <div class="text-accent text-weight-bold">URL petición</div><div>{{url}}</div>
-            </q-card-section>
-            <q-card-section class="q-pt-none q-mt-none" v-if="mostrar_info_error">                
-                <div class="text-red text-weight-bold">Parámetros de Petición</div>
-                <ul class="q-mt-none">
-                    <li v-for="(value, key) in request_config" v-bind:key="key">
-                        {{key}}:{{value}}
-                    </li>
-                </ul>
-            </q-card-section>
-            <q-card-section class="q-pt-none q-mt-none" v-if="mostrar_info_error">
-                <div class="text-red text-weight-bold">Stacktrace</div>
-                <div v-for="error in stacktrace" v-bind:key="error">
-                    {{error}}
-                </div>
-            </q-card-section>            
-        <q-separator />
-        <q-card-actions align="right">
-            <q-btn dense color="primary" v-close-popup @click="btn_ok_handler">OK</q-btn>
-            <q-btn flat v-close-popup>Cerrar</q-btn>
-        </q-card-actions>
-      </q-card>-->
-    </q-dialog>
+    <v-dialog v-model="localValue">
+        <v-card>
+            <v-card-title class="text-h6">
+
+            </v-card-title>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
     export default {
@@ -58,8 +13,26 @@
         props:{
             config:{
                 type:Object,
-                default: () => {}
-            }
+                default: () => {
+                    return {                        
+                        
+                    }
+                }
+            },
+            httpresp:{
+                type:Object,
+                default: () => {
+                    return {
+                        
+                    }
+                }
+            },            
+            value:{
+                required:true
+            },
+            callback:"",
+            onerror:false,
+            updtime:null
         },
         data () {
             return {
@@ -70,7 +43,7 @@
                 request_config:{},
                 stacktrace:[],
                 url:"",
-                opened: false,
+                localValue: false,
                 mostrar_info_error:false,
                 msgdata:{
                     icon:"",
@@ -88,12 +61,12 @@
             }
         },
         watch:{
-            /*config:function(newconf){                
-                if ('httpresp' in newconf){     
-                    this.httpresp(newconf.httpresp,newconf.open)
-                    return;
-                }                                             
-            }*/
+            localValue:function(newval){
+                this.$emit('input',newval)
+            },
+            value:function(newval){
+                this.localValue = newval
+            }
         },
         mounted:function(){
             //this.interface()

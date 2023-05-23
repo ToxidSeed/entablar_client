@@ -4,7 +4,26 @@
     >
       <v-app-bar-nav-icon @click="(drawer=!drawer)"></v-app-bar-nav-icon>    
       <v-spacer></v-spacer>
-      <v-btn plain>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="blue darken-4"
+            icon
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>
+              mdi-cog
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item :to="{name:'datastoragesystem'}">
+            <v-list-item-title>Data Storage System</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>      
+      <v-btn icon @click="cerrar_cesion">
         <v-icon
           color="red darken-4"
         >
@@ -14,13 +33,10 @@
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer">
       
-    </v-navigation-drawer >  
-    <v-main class="pa-0">      
-      <!-- If using vue-router -->      
-      <v-container class="pa-0">
-        <router-view></router-view>            
-      </v-container>        
-    </v-main>
+    </v-navigation-drawer >      
+    <v-main>
+        <router-view></router-view>      
+    </v-main>    
   </v-app>
 </template>
 
@@ -87,16 +103,18 @@ export default {
                 console.log('get_dbms_list')         
             })
     },
-    sign_out:async function(){
-      console.log('oxxx')
-      const success_logout = await this.$gAuth.signOut()      
+    cerrar_cesion:async function(){      
+      localStorage.clear()
+      this.$router.push('/login')
+      
+      /*const success_logout = await this.$gAuth.signOut()      
       console.log(success_logout)
       if(success_logout == true){        
-        console.log(success_logout)
+        console.log(success_logout)         
         localStorage.isAuthorized = false
         localStorage.authCode = ''
         this.$router.push('/login')
-      }
+      }*/
     }
   }
 }

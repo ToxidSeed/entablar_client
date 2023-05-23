@@ -36,6 +36,7 @@
                                     dark     
                                     style="width:100%;"                          
                                     class="text-capitalize"
+                                    @click="login"
                                 >
                                     Login
                                 </v-btn>
@@ -111,8 +112,20 @@ export default {
             }
             this.$router.push('/')
         },
-        sign_in:function(){
-            console.log('fix')
+        login:function(){
+            this.$http.post('/auth/LocalLoginController/login',{
+                usuario:this.usuario,
+                password:this.password
+            }).then(httpresp => {
+                let appresp = httpresp.data
+                if(appresp.success){
+                    let appdata = appresp.data
+                    localStorage.clear()
+                    localStorage.setItem('auth','local')
+                    localStorage.setItem('token',appdata.token)
+                    this.$router.push('/')
+                }                
+            })
         }
     }
 }

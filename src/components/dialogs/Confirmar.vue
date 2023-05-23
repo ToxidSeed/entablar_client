@@ -1,17 +1,29 @@
 <template>
-    <q-dialog v-model="localValue" persistent>
-        <q-card>
-            <q-card-section class="row items-center">
-            <q-avatar icon="question_mark" color="warning" text-color="white" />
-            <span class="q-ml-sm">{{msg}}</span>
-            </q-card-section>
-
-            <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="red" v-close-popup />
-            <q-btn label="Si" color="primary" v-close-popup @click="btn_si_click_handler"/>
-            </q-card-actions>
-        </q-card>
-    </q-dialog>
+    <v-dialog v-model="localValue" max-width="400">
+        <v-card>
+            <v-card-title class="text-h5">
+                {{config.title}}
+            </v-card-title>
+            <v-card-text>{{config.msg}}</v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="red darken-1"
+                    text
+                    @click="localValue = false"
+                >
+                    Cancelar
+                </v-btn>
+                <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="btn_si_click_handler"
+                >
+                    Ok
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 export default {
@@ -20,9 +32,15 @@ export default {
         value:{
             required:true
         },
-        msg:{
-            type:String,
-            default:""
+        config:{
+            type: Object,
+            default: () => {
+                return {
+                    title:"",
+                    msg:"",
+                    callback:"ok"
+                }
+            }
         }
     },
     data(){
@@ -40,7 +58,8 @@ export default {
     },
     methods:{
         btn_si_click_handler:function(){
-            this.$emit('ok')
+            this.localValue = false
+            this.$emit(this.config.callback)
         }
     }
 }
